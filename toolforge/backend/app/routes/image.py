@@ -65,7 +65,7 @@ async def image_module_info():
 # ─── Convert ──────────────────────────────────────────────────────────────────
 
 @router.post("/convert")
-async def convert_image(
+def convert_image(
     file: UploadFile = File(...),
     format: str = Form(..., description="Target format: png, jpg, webp, bmp, tiff, ico"),
     quality: int = Form(90, ge=1, le=100),
@@ -86,7 +86,7 @@ async def convert_image(
 # ─── Resize ───────────────────────────────────────────────────────────────────
 
 @router.post("/resize")
-async def resize_image(
+def resize_image(
     file: UploadFile = File(...),
     width: Optional[int] = Form(None, ge=1),
     height: Optional[int] = Form(None, ge=1),
@@ -111,7 +111,7 @@ async def resize_image(
 # ─── Crop ─────────────────────────────────────────────────────────────────────
 
 @router.post("/crop")
-async def crop_image(
+def crop_image(
     file: UploadFile = File(...),
     left: int = Form(..., ge=0),
     top: int = Form(..., ge=0),
@@ -134,7 +134,7 @@ async def crop_image(
 # ─── Rotate / Flip ────────────────────────────────────────────────────────────
 
 @router.post("/rotate")
-async def rotate_image(
+def rotate_image(
     file: UploadFile = File(...),
     angle: float = Form(..., description="Rotation angle in degrees (90, 180, 270, or any)"),
     expand: bool = Form(True),
@@ -152,7 +152,7 @@ async def rotate_image(
 
 
 @router.post("/flip")
-async def flip_image(
+def flip_image(
     file: UploadFile = File(...),
     direction: str = Form(..., description="horizontal | vertical | both"),
 ):
@@ -177,7 +177,7 @@ async def list_filters():
 
 
 @router.post("/filter")
-async def apply_filter(
+def apply_filter(
     file: UploadFile = File(...),
     filter_name: str = Form(...),
     intensity: float = Form(1.0, ge=0.0, le=5.0),
@@ -198,7 +198,7 @@ async def apply_filter(
 # ─── Adjustments ──────────────────────────────────────────────────────────────
 
 @router.post("/adjust")
-async def adjust_image(
+def adjust_image(
     file: UploadFile = File(...),
     brightness: float = Form(1.0, ge=0.0, le=3.0),
     contrast: float = Form(1.0, ge=0.0, le=3.0),
@@ -221,7 +221,7 @@ async def adjust_image(
 # ─── Compress ─────────────────────────────────────────────────────────────────
 
 @router.post("/compress")
-async def compress_image(
+def compress_image(
     file: UploadFile = File(...),
     quality: int = Form(75, ge=1, le=95),
     optimize: bool = Form(True),
@@ -244,7 +244,7 @@ async def compress_image(
 # ─── Watermark ────────────────────────────────────────────────────────────────
 
 @router.post("/watermark/text")
-async def watermark_text(
+def watermark_text(
     file: UploadFile = File(...),
     text: str = Form(...),
     position: str = Form("bottom-right", description="top-left|top-right|bottom-left|bottom-right|center"),
@@ -268,7 +268,7 @@ async def watermark_text(
 # ─── Metadata ─────────────────────────────────────────────────────────────────
 
 @router.post("/metadata")
-async def get_metadata(file: UploadFile = File(...)):
+def get_metadata(file: UploadFile = File(...)):
     """Extract all metadata (EXIF, dimensions, color mode, size) from an image."""
     src = save_upload(file)
     try:
@@ -281,7 +281,7 @@ async def get_metadata(file: UploadFile = File(...)):
 
 
 @router.post("/metadata/strip")
-async def strip_metadata(file: UploadFile = File(...)):
+def strip_metadata(file: UploadFile = File(...)):
     """Remove all metadata (EXIF) from an image — for privacy."""
     src = save_upload(file)
     ext = Path(file.filename).suffix.strip(".") or "png"
@@ -298,7 +298,7 @@ async def strip_metadata(file: UploadFile = File(...)):
 # ─── Background Removal (AI) ──────────────────────────────────────────────────
 
 @router.post("/bg-remove")
-async def remove_background(file: UploadFile = File(...)):
+def remove_background(file: UploadFile = File(...)):
     """
     Remove background from image using rembg (U2Net — local AI, no API key).
     Output is always PNG (transparency support).
@@ -319,7 +319,7 @@ async def remove_background(file: UploadFile = File(...)):
 # ─── Upscale (AI) ─────────────────────────────────────────────────────────────
 
 @router.post("/upscale")
-async def upscale_image(
+def upscale_image(
     file: UploadFile = File(...),
     scale: int = Form(2, ge=2, le=4, description="Upscale factor: 2 or 4"),
 ):
@@ -341,7 +341,7 @@ async def upscale_image(
 # ─── OCR ──────────────────────────────────────────────────────────────────────
 
 @router.post("/ocr")
-async def ocr_image(
+def ocr_image(
     file: UploadFile = File(...),
     language: str = Form("eng", description="Tesseract language code: eng, hin, fra, deu..."),
 ):
@@ -361,7 +361,7 @@ async def ocr_image(
 # ─── Grayscale / Invert ───────────────────────────────────────────────────────
 
 @router.post("/grayscale")
-async def to_grayscale(file: UploadFile = File(...)):
+def to_grayscale(file: UploadFile = File(...)):
     src = save_upload(file)
     ext = Path(file.filename).suffix.strip(".") or "png"
     out = make_output_path("grayscale", ext)
@@ -375,7 +375,7 @@ async def to_grayscale(file: UploadFile = File(...)):
 
 
 @router.post("/invert")
-async def invert_colors(file: UploadFile = File(...)):
+def invert_colors(file: UploadFile = File(...)):
     src = save_upload(file)
     ext = Path(file.filename).suffix.strip(".") or "png"
     out = make_output_path("inverted", ext)
