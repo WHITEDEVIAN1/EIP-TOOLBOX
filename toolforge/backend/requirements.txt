@@ -38,7 +38,7 @@ pikepdf==9.2.0                # Advanced PDF (compress, OCR-layer)
 pdf2image==1.17.0             # PDF → image (needs poppler)
 python-docx==1.1.2            # .docx read/write
 openpyxl==3.1.5               # .xlsx read/write
-pptx==1.0.0                   # .pptx read/write  
+python-pptx                   # .pptx read/write
 markdown==3.7                 # Markdown → HTML
 py7zr==0.21.1                 # 7z archive support
 
