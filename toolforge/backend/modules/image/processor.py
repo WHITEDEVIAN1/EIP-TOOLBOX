@@ -203,12 +203,22 @@ class ImageProcessor:
     # ── Background Removal (AI) ───────────────────────────────────────────────
 
     def remove_background(self, src: Path, out: Path):
-        from rembg import remove
-        with open(src, "rb") as f:
-            input_data = f.read()
-        output_data = remove(input_data)
-        with open(out, "wb") as f:
-            f.write(output_data)
+        from rembg import remove, new_session
+        # Using 'u2netp' (tiny) model to save memory on Render's 512MB free tier
+        # u2net is ~170MB, u2netp is ~4MB. Quality is slightly lower but fixes OOM.
+        try:
+            session = new_session("u2netp")
+            with open(src, "rb") as f:
+                input_data = f.read()
+            output_data = remove(input_data, session=session)
+            with open(out, "wb") as f:
+                f.write(output_data)
+        except Exception as e:
+            # Fallback to default if u2netp fails
+            input_data = open(src, "rb").read()
+            output_data = remove(input_data)
+            with open(out, "wb") as f:
+                f.write(output_data)
 
     # ── Upscale ──────────────────────────────────────────────────────────────
 
