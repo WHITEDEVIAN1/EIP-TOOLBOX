@@ -8,8 +8,14 @@ import {
   RefreshCw, ChevronRight, Layers
 } from 'lucide-react'
 
-const API = '/api/image'
+const BACKEND_URL = import.meta.env.VITE_API_URL || ''
+const API = `${BACKEND_URL}/api/image`
 
+const getFullUrl = (path) => {
+  if (!path) return path
+  if (path.startsWith('http') || path.startsWith('blob:') || path.startsWith('data:')) return path
+  return `${BACKEND_URL}${path}`
+}
 // ─── Sidebar navigation items ─────────────────────────────────────────────────
 const TOOLS = [
   { id: 'convert',    label: 'Convert',    icon: FileDown,       group: 'Basic' },
@@ -116,7 +122,7 @@ function PreviewArea({ original, result, onDownload }) {
           )}
         </div>
         {result
-          ? <img src={result} className="preview-img" alt="Result" />
+          ? <img src={getFullUrl(result)} className="preview-img" alt="Result" />
           : <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Result will appear here</div>
         }
       </div>
@@ -698,7 +704,7 @@ export default function App() {
   const handleDownload = async () => {
     if (!result) return
     try {
-      const resp = await fetch(result)
+      const resp = await fetch(getFullUrl(result))
       const blob = await resp.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
