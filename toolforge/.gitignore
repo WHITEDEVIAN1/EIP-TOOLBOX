@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+.pytest_cache/
+uploads/
+outputs/
+*.jpg
+*.png
+.env
+.venv
+venv/
+
